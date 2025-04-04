@@ -4,15 +4,20 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "dev": "next dev"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@truffle/hdwallet-provider": "^2.1.15",
+    "dotenv": "^16.4.7",
     "fs-extra": "^11.3.0",
     "ganache": "^7.9.2",
     "mocha": "^10.8.2",
+    "next": "^12.3.7",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "solc": "^0.4.17",
     "web3": "^4.16.0"
   }
