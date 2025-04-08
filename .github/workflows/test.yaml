@@ -1,0 +1,59 @@
+name: Test Smart Contracts
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'ethereum/contracts/**'
+      - 'test/**'
+  pull_request:
+    paths:
+      - 'ethereum/contracts/**'
+      - 'test/**'
+  workflow_dispatch:
+
+jobs:
+  test-contracts:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm install -g --legacy-peer-deps
+        
+      - name: Compile contracts
+        run: node ethereum/compile.js
+        
+      - name: Run tests
+        id: run-tests
+        run: npm run test
+        continue-on-error: true
+        
+      - name: Create test summary
+        run: |
+          echo "### Smart Contract Test Results" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.run-tests.outcome }}" == "success" ]; then
+            echo "✅ All tests passed successfully" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Some tests failed" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+          
+      - name: Upload test artifacts
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: |
+            ethereum/build/
+            test-results/
+          retention-days: 7
