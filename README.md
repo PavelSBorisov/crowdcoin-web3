@@ -1,6 +1,8 @@
-# CrowdCoin - Decentralized Crowdfunding Platform built on Ethereum
+# [CrowdCoin](https://crowdcoin-web3.vercel.app/)* - Decentralized Crowdfunding Platform built on Ethereum
 
 A blockchain-based crowdfunding platform built on Ethereum where campaign creators can raise funds and contributors have oversight on how funds are spent.
+
+*Using the platform requires Metamask.
 
 ## Project Overview
 
