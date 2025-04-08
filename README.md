@@ -35,6 +35,8 @@ Factory contract deployed at: `0x782F00C1Bf1E12a916f53643198Bf57500Be5436` on Se
 
 ```
 crowdcoin-web3/
+├── .github/workflows/     # Workflows for the repo
+|   └──deploy_factory.yaml # Workflow to deploy a new factory contract
 ├── components/            # React components
 │   ├── ContributeForm.js  # Form to contribute to campaigns
 │   ├── Header.js          # Application header with navigation

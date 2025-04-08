@@ -1,0 +1,45 @@
+name: Deploy Factory Contract
+
+on:
+  workflow_dispatch:
+    inputs:
+      network:
+        description: 'Network to deploy to (currently only sepolia testnet is supported)'
+        required: true
+        default: 'sepolia'
+
+jobs:
+  deploy-factory-contract:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm install -g --legacy-peer-deps
+        
+      - name: Compile contracts
+        run: node ethereum/compile.js
+        
+      - name: Deploy Factory Contract
+        env:
+          MNEMONIC: ${{ secrets.MNEMONIC }}
+          NEXT_PUBLIC_INFURA_URL: ${{ secrets.INFURA_URL}}
+        run: |
+          echo "Deploying factory contract to ${{ github.event.inputs.network }}..."
+          node ethereum/deploy.js > deployment_output.txt
+          echo "FACTORY_ADDRESS=$(grep -oP 'Contract deployed to \K0x[a-fA-F0-9]{40}' deployment_output.txt)" >> $GITHUB_ENV          
+      - name: Create deployment summary
+        run: |
+          echo "### Factory Contract Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "⚠️ **IMPORTANT**: Update your frontend configuration with the new factory address!" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Factory contract deployed to ${{ github.event.inputs.network }}" >> $GITHUB_STEP_SUMMARY
+          echo "📝 Factory Address: \`${{ env.FACTORY_ADDRESS }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "🔗 [View on Etherscan](https://${{ github.event.inputs.network }}.etherscan.io/address/${{ env.FACTORY_ADDRESS }})" >> $GITHUB_STEP_SUMMARY
